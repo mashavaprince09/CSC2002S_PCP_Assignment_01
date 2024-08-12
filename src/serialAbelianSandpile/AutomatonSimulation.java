@@ -60,12 +60,12 @@ class AutomatonSimulation{
     	  	
     	if (args.length!=2) {   //input is the name of the input and output files
     		System.out.println("Incorrect number of command line arguments provided.");   	
-    		System.exit(0);
+    		//System.exit(0); 
     	}
     	/* Read argument values */
-  		String inputFileName = args[0];  //input file name
-		String outputFileName=args[1]; // output file name
-    
+  		String inputFileName = args[0];  //input file name ***********
+		String outputFileName=args[1]; // output file name ***********
+
     	// Read from input .csv file
     	simulationGrid = new Grid(readArrayFromCSV(inputFileName));
     	
@@ -92,6 +92,6 @@ class AutomatonSimulation{
     	//Do NOT CHANGE below!
     	//simulation details - you must keep these lines at the end of the output in the parallel versions      	System.out.printf("\t Rows: %d, Columns: %d\n", simulationGrid.getRows(), simulationGrid.getColumns());
 		System.out.printf("Number of steps to stable state: %d \n",counter);
-		System.out.printf("Time: %d ms\n",endTime - startTime );			/*  Total computation time */		
+		System.out.printf("Time: %d ms -Paralell\n",endTime - startTime );			/*  Total computation time */		
     }
 }

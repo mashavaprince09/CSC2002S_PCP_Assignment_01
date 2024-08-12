@@ -4,6 +4,7 @@ package serialAbelianSandpile;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ForkJoinPool;
 import javax.imageio.ImageIO;
 
 //This class is for the grid for the Abelian Sandpile cellular automaton
@@ -11,6 +12,9 @@ public class Grid {
 	private int rows, columns;
 	private int [][] grid; //grid 
 	private int [][] updateGrid;//grid for next time step
+
+	private final ForkJoinPool pool = ForkJoinPool.commonPool();
+	private AbelianSandpileThread abeliansandpilethread;
     
 	public Grid(int w, int h) {
 		rows = w+2; //for the "sink" border
@@ -71,29 +75,17 @@ public class Grid {
 	//for the next timestep - copy updateGrid into grid
 	public void nextTimeStep() {
 		for(int i=1; i<rows-1; i++ ) {
-			for( int j=1; j<columns-1; j++ ) {
-				this.grid[i][j]=updateGrid[i][j];
-			}
+                    System.arraycopy(updateGrid[i], 1, this.grid[i], 1, columns-1 - 1);
 		}
 	}
 	
 	//key method to calculate the next update grod
 	boolean update() {
-		boolean change=false;
-		//do not update border
-		for( int i = 1; i<rows-1; i++ ) {
-			for( int j = 1; j<columns-1; j++ ) {
-				updateGrid[i][j] = (grid[i][j] % 4) + 
-						(grid[i-1][j] / 4) +
-						grid[i+1][j] / 4 +
-						grid[i][j-1] / 4 + 
-						grid[i][j+1] / 4;
-				if (grid[i][j]!=updateGrid[i][j]) {  
-					change=true;
-				}
-		}} //end nested for
-	if (change) { nextTimeStep();}
-	return change;
+		abeliansandpilethread = new AbelianSandpileThread(1,rows, columns, grid, updateGrid);
+		boolean change = pool.invoke(abeliansandpilethread);
+
+		if (change) { nextTimeStep();}
+		return change;
 	}
 	
 	
