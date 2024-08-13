@@ -11,13 +11,14 @@ JAVA_FILES = $(wildcard $(SRC_DIR)/*.java)
 CLASS_FILES = $(patsubst $(SRC_DIR)/%.java, $(BIN_DIR)/%.class, $(JAVA_FILES))
 
 # Compilation flags
-JAVAC_FLAGS = -d bin -sourcepath src
+JAVAC_FLAGS = -d bin -sourcepath src src/serialAbelianSandpile/*.java
+
 
 # Main class
 MAIN_CLASS = serialAbelianSandpile.AutomatonSimulation
 
 # Default arguments (update these if needed)
-ARGS ?= input/65_by_65_all_4.csv output/65_by_65_all_4.png  # Replace 'default_arguments' with your specific default arguments, if any
+ARGS ?= input/2000_by_2000_All_1.csv output/c.png  # Replace 'default_arguments' with your specific default arguments, if any
 
 # Targets
 .PHONY: all clean run directories

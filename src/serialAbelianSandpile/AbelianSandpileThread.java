@@ -8,7 +8,7 @@ public class AbelianSandpileThread extends RecursiveTask<Boolean>{
 	int [][] grid; 
 	int [][] updateGrid;
 
-	static final int SEQUENTIAL_CUTOFF = 5000;
+	static final int SEQUENTIAL_CUTOFF = 1200; 
 
     public AbelianSandpileThread (int startRow, int endRow, int columns, int[][] grid, int[][] updateGrid){
         this.startRow = startRow;
@@ -20,26 +20,26 @@ public class AbelianSandpileThread extends RecursiveTask<Boolean>{
 
 	@Override
     protected Boolean compute(){
-		if((endRow-startRow)*(endRow-startRow) <= SEQUENTIAL_CUTOFF ){
+		if((endRow-startRow)*(endRow-startRow) <= SEQUENTIAL_CUTOFF ){ // determine if the area of the grid is small enough to be processed sequantially
 			return update();
 		}
-		int midRow = (startRow + endRow)/2;
-		AbelianSandpileThread left = new AbelianSandpileThread(startRow, midRow ,col, grid, updateGrid);
+		int midRow = (startRow + endRow)/2; // half the number of rows to divide the grid into 2
+		AbelianSandpileThread left = new AbelianSandpileThread(startRow, midRow ,col, grid, updateGrid); // create a new thread to assign the left side of the grid to
 		left.startRow = startRow;
 		left.endRow = midRow;
-		left.fork();	
+		left.fork(); // submit left sub-grid to a pool of worker threads for execution
 		AbelianSandpileThread right = new AbelianSandpileThread(midRow, endRow,col, grid, updateGrid);    
 		right.startRow = midRow;
 		right.endRow = endRow;  
-		boolean rightAns = right.compute();
+		boolean rightAns = right.compute(); // wait for the right grid to be fully processed before getting its result.
 		boolean leftAns = left.join();
-		return leftAns || rightAns;
+		return leftAns || rightAns; // Return true if either sub-grid was successfully processed
     }
 
 	private boolean update(){
 		boolean result=false;
 		//do not update border
-		for( ; startRow<endRow; startRow++ ) {
+		for( ; startRow<endRow; startRow++ ) { // topple cell to stabilise the grid
 			for( int j = 1; j<col-1; j++ ) {
 				updateGrid[startRow][j] = (grid[startRow][j] % 4) + 
 						(grid[startRow-1][j] / 4) +
