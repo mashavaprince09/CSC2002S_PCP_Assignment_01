@@ -1,7 +1,3 @@
-Here’s a README for your project:
-
----
-
 # Serial Abelian Sandpile Simulation
 
 This project implements a serial Abelian Sandpile simulation in Java, organized with a Makefile to facilitate compiling and running the program.
